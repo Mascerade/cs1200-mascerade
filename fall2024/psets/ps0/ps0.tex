@@ -1,5 +1,5 @@
 \documentclass[11pt]{article}
-\usepackage{Fall24/classTools}
+\usepackage{classTools}
 \usepackage{graphicx}
 \drafttrue
 
@@ -77,7 +77,7 @@ print(tree.root.left.key)
 
  Here is an instance \treeT\ of \texttt{BinaryTree}:
  
- \includegraphics[scale=.175]{ps0_assets/p0_q1_BT_before.png}
+ \includegraphics[scale=.175]{./ps0-assets/p0_q1_BT_before.png}
 
  A \texttt{BinaryTree} \treeT\  contains only a pointer to its root vertex, \texttt{T.root}, which is required to satisfy \texttt{T.root.parent==None}. In the above example, 
  the root is the vertex with key 1 (i.e. \texttt{T.root.key==1}).
@@ -114,13 +114,49 @@ print(tree.root.left.key)
 For example, if \treeT\  is the  tree shown above, 
 then calling \texttt{calculate\_sizes(T.root)} should modify  \treeT\ to be the following size-augmented tree:
 
- \includegraphics[scale=.175]{ps0_assets/p0_q1_BT_after.png}
+ \includegraphics[scale=.175]{./ps0-assets/p0_q1_BT_after.png}
 
  Your program should run in time $O(n)$ when given the root of a tree with $n$ vertices. In a sentence or two, informally justify why your program has such a runtime. 
 
+ \smallskip
+ ---
+
+ This program has a runtime of $O(n)$ because we are essentially just visiting each node once.
+ 
+ --- 
+ \smallskip
+
 
     \item (proofs by induction) Let $t$ be a positive integer. Prove that every binary tree $\treeT$ of size at least $2t+1$ has a vertex $\btv$ such that the subtree rooted at $\btv$ has size at least $t$ and at most $2t$.  (Hint: use induction on the size $n$ of $\treeT$, starting with base case $n=2t+1$.  Remember that nodes in binary trees can have 2, 1, or 0 children.) \label{part:induction-tsize}
+
+    \smallskip
+
+    ---------
     
+    We can prove this by induction. We start with our base case of when the size of $\treeT$ is $2t + 1$. In this case, given that we are looking at the $\textit{subtree}$ $v$ of $\treeT$, the root of $\treeT$ takes up 1 node. Therefore, among the immediate subtrees, we have that their sizes must sum to $2t + 1 - 1 = 2t$.
+    In the simplest case, when branch of the root of the tree has a size of 0, the other branch must have size $2t$. Now, we must consider how a subtree must exist such that $t$ is the minimum size.
+    
+
+    Consider that we have subtrees $s_0$ and $s_1$. If we were to split the size evenly, each subtree would have a size of $2t / 2 = t$. So, we have (let size be a function that gives the size of a tree):
+    
+    $$ size(s_0) = t $$
+    $$ size(s_1) = t $$
+
+    Now, given that we have a finite size, if we were to move nodes over to another subtree, we would have (where $a \le t$):
+
+    $$ size(s_0) = t - 1a $$
+    $$ size(s_1) = t + 1a $$
+
+    Therefore, it becomes clear that there must exist some subtree where the size is $\ge t$.
+
+    Now, we can take the $n + 1$ which is $2t + 2$. We can show that there must exist a subtree $v$ where the size is $\ge t$ and $\le 2t$. When the tree only has one chid,
+    the child node is the root of a subtree that is size $2t + 1$ which is our base case. In the case where there are two children, the minimum size each could be is $\frac{2t + 2}{2} = t + 1$.
+    This is between $t$ and $2t$ which satisfies our condition. Therefore, the thereom is proven in the $n + 1$ case. 
+
+    ---------
+
+    \smallskip
+
     \item (from proofs to algorithms) Turn your proof from Part~\ref{part:induction-tsize} into a Python program \texttt{FindDescendantOfSize(t,v)} that, given a positive integer $\texttt{t}$ and a vertex \texttt{v} of a {\em size-augmented} tree \treeT\ such that $\texttt{v.size}\geq \texttt{2t+1}$, finds and returns a descendant  \texttt{w} of $\texttt{v}$ such that $\texttt{t}\leq \texttt{w.size} \leq \texttt{2t}$.  Your algorithm should run in time $O(h)$, where $h$ is the height of the subtree rooted at $\texttt{v}$; explain in words why this is the case.
 \end{enumerate}
  
@@ -137,8 +173,45 @@ Let $f$ and $g$ be functions from $\N$ to $\R^+$, where $\N=\{0,1,2,\ldots\}$ de
     \item For each of the following pairs of functions, determine whether $f=O(g)$ and whether $f=o(g)$.  Justify your answers.
     \begin{enumerate}
         \item $f(n) = 3\log_2^3 n$, $g(n) = n^2+1$.
+        
+        \smallskip
+        
+        ---------
+
+        We can show that $f = o(g(n))$ and $f = O(g(n))$ by showing $f = o(g(n))$ because $f = o(g(n)) \implies O(g(n))$. To do this, we can use L'Hopital's rule to show that the
+        asymptotic growth rate of $g(n)$ is greater than $f(n)$:
+
+        $$ \lim_{n \rightarrow \infty} \frac{\frac{d}{dn} (3log_{2}(n+1))^3}{\frac{d}{dn}n^3} $$
+        $$ \lim_{n \rightarrow \infty} \frac{3(3log_{2}(n+1))^2 * \frac{1}{3n \ln 2}}{3n^2} $$
+        $$ \lim_{n \rightarrow \infty} \frac{3log_{2}(n+1)^2 * \frac{1}{\ln 2}}{3n^3}$$
+
+        From here, we can see that, $n^3$ grows faster than $n^2$ causing the expression to go to 0, so therefore, $f = o(g(n))$.
+
+        ---------
+
+        \smallskip
+
         \item $f(n) = 4n^3$, $g(n)= \left| \{S \subseteq [n] : |S|\leq 3\}\right|,$ where $[n]=\{0,1,2,\ldots,n-1\}$.  
         \item $f(n) = 5^n$, $g(n)=n!$.
+        
+        \smallskip
+
+        ---------
+
+        For this, we show that $f = o(g(n))$. We can start in the case that $n = 1$. We know that in the $n + 1$ case, we have:
+
+        $$ f(n + 1) = 5^{n + 1} = 5 * 5^n $$
+
+        $$ g(n + 1) = (n + 1)! = (n + 1) * n! $$
+
+        We can see from this that while $f(n)$ grows by a factor of 5 as $n$ incrases, $g(n)$ grows by a factor of $n + 1$.
+        This means that as $n$ grows towards infinity, the growth of $g(n)$ is much greater than that of $f(n)$ no matter regardless of any
+        constant factor that could be multiplied to $f(n)$. Therefore, $f = o(g(n))$.
+
+        ---------
+
+        \smallskip
+
     \end{enumerate}
 
     \item Prove or disprove: For all functions $f,g : \N\rightarrow \R^+,$ $f=O(g) \Rightarrow g\neq o(f)$.
@@ -147,6 +220,17 @@ Let $f$ and $g$ be functions from $\N$ to $\R^+$, where $\N=\{0,1,2,\ldots\}$ de
 \item (reflection: excitement and apprehension)  On every problem set in cs1200, there will be a qualitative reflection question, usually about some aspect of your engagement with the course (but sometimes about the course content itself). Your answers to these questions and the in-class sender-receiver exercises will be the basis of your participation grade.  For starters, every thoughtful answer with some specifics will receive an R grade; R+ will be reserved for exceptional ones and grades below R for responses that are incomplete or generic.
 
 (Re)watch the course overview video and (re)read the syllabus.  What aspect of cs1200 are you most excited about and what aspect are you most apprehensive about?  What efforts can you make as a student to make the most out of your excitement, and to help address your apprehension?
+
+\smallskip
+
+---------
+
+I am excited to formally learn about algorithms and the sort of thinking that goes into implementing them. Even the process of proving certain concepts related to algorithms is an interesting method of thinking
+that has applications beyond just CS. I will try my best to keep up with the books especially as that is usually my primary method of engaging with learning material.
+
+---------
+
+\smallskip
 
 \item Once you're done with this problem set, please fill out \href{https://forms.gle/yLptjrB15sRm1c679}{this survey} so that we can gather students' thoughts on the problem set, and the class in general. It's not required, but we really appreciate all responses!
 \end{enumerate}
